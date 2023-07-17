@@ -8,6 +8,7 @@ use poise::serenity_prelude as serenity;
 
 use crate::utils::mangadex::client::MangadexClient;
 
+
 pub struct Data {
     pub http: reqwest::Client,
     pub mangadex: MangadexClient,
@@ -31,7 +32,7 @@ async fn main() {
             commands: commands::get_commands(),
             ..Default::default()
         })
-        .token("")
+        .token(std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN"))
         .intents(serenity::GatewayIntents::all())
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
