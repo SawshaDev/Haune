@@ -33,7 +33,7 @@ pub struct MangaAttributes {
 pub struct Relationship {
     pub id: String,
     #[serde(rename = "type")]
-    pub relationship_type: String,
+    pub relationship_type: RelationshipType,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -64,4 +64,11 @@ pub struct TagAttribute {
     pub name: HashMap<String, String>,
     pub description: HashMap<String, String>,
     pub group: String,
+}
+
+#[derive(Debug, Deserialize, Serialize, PartialEq)]
+pub enum RelationshipType {
+    artist,
+    author,
+    cover_art
 }

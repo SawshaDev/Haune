@@ -4,7 +4,7 @@ use tokio;
 
 use crate::Error;
 
-use crate::utils::mangadex::structs::{Cover, Manga, Relationship};
+use crate::utils::mangadex::structs::{Cover, Manga, Relationship, RelationshipType};
 
 const BASE_URL: &str = "https://api.mangadex.org/";
 
@@ -13,10 +13,11 @@ pub fn get_cover_from_relationship(
 ) -> Result<&Relationship, Error> {
     loop {
         for relationship in relationships {
-            if relationship.relationship_type == "cover_art" {
+            println!("{:#?}", relationship.relationship_type);
+
+            if relationship.relationship_type == RelationshipType::cover_art {
                 return Ok(relationship);
             } else {
-                println!("not cover_art; continuing.");
                 continue;
             }
         }
@@ -79,10 +80,8 @@ impl MangadexClient {
             .await?
             .text()
             .await?;
-        println!("{:#?}", req);
 
         let cover: serde_json::Value = serde_json::from_str(&req).unwrap();
-        println!("{:#?}", cover);
         let cover = serde_json::from_value::<Cover>(cover["data"].to_owned()).unwrap();
 
         Ok(cover)
