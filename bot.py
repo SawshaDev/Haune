@@ -34,15 +34,12 @@ class Haune(commands.Bot):
     async def setup_hook(self):
         # Load Cogs
 
-        cogs = ["jishaku"] + [
+        exts = ["jishaku"] + [
             f"cogs.{ext if not ext.endswith('.py') else ext[:-3]}"
             for ext in os.listdir("cogs")
             if not ext.startswith("_")
-        ] 
-
-        for ext in cogs:
-            self.loaded_cogs =+ 1
-
+        ]
+        for ext in exts:
             await self.load_extension(ext)
         
 

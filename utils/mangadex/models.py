@@ -6,7 +6,10 @@ from enum import Enum
 
 import logging
 
-
+class RelationshipType(Enum):
+    ARTIST = "artist"
+    AUTHOR = "author"
+    COVER_ART = "cover_art"
 
 class Manga:
     def __init__(self, payload: Dict[str, Any]):
@@ -22,6 +25,16 @@ class Manga:
 
         self.attributes = MangaAttributes(payload["attributes"])
 
+        self.relationships: List[Relationship] = self._make_relationships(payload["relationships"])
+
+
+    def _make_relationships(self, payload: List[Dict[str, str]]) -> List[Relationship]:
+        relationships: List[Relationship] = []
+        for relationship in payload:
+            new_rl = Relationship(relationship)
+            relationships.append(new_rl)
+
+        return relationships
 
 class MangaAttributes:
     def __init__(self, payload: Dict[str, Any]):
@@ -44,6 +57,20 @@ class MangaAttributes:
             tags.append(new_tag)
 
         return tags
+
+class Relationship:
+    def __init__(self, payload: Dict[str, Any]):
+        self._payload = payload
+
+        self._from_data(self._payload)
+    
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} Relationship Type: {self.relationship_type!r}>"
+
+    def _from_data(self, payload: Dict[str, Any]):
+        self.id = payload["id"]
+
+        self.relationship_type: RelationshipType = payload["type"]
 
 
 class Tag:
