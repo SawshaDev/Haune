@@ -1,10 +1,14 @@
 from __future__ import annotations
 
-from typing import Dict, Any, List 
+from typing import Dict, Any, List, Optional
 
 from enum import Enum
 
 import logging
+
+
+logger = logging.getLogger(__name__)
+
 
 class RelationshipType(Enum):
     ARTIST = "artist"
@@ -35,6 +39,28 @@ class Manga:
             relationships.append(new_rl)
 
         return relationships
+    
+class Cover:
+    def __init__(self, payload: Dict[str, Any]):
+        self._payload = payload
+
+        self._from_data(self._payload)
+
+    def _from_data(self, payload: Dict[str, Any]):
+        self.cover_type = payload["type"]
+        self.attributes: CoverAttributes = CoverAttributes(payload["attributes"])
+
+class CoverAttributes:
+    def __init__(self, payload: Dict[str, Any]):
+        self._payload = payload
+
+        self._from_data(self._payload)
+
+    def _from_data(self, payload: Dict[str, Any]):
+        self.volume: Optional[str] = payload.get("volume")
+        self.file_name = payload["fileName"]
+        self.description: Optional[str] = payload.get("description")
+
 
 class MangaAttributes:
     def __init__(self, payload: Dict[str, Any]):
@@ -56,6 +82,8 @@ class MangaAttributes:
             new_tag = Tag(tag)
             tags.append(new_tag)
 
+
+
         return tags
 
 class Relationship:
@@ -65,12 +93,12 @@ class Relationship:
         self._from_data(self._payload)
     
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} Relationship Type: {self.relationship_type!r}>"
+        return f"<{self.__class__.__name__} Relationship Type: {self.type!r}>"
 
     def _from_data(self, payload: Dict[str, Any]):
         self.id = payload["id"]
 
-        self.relationship_type: RelationshipType = payload["type"]
+        self.type: str = payload["type"]
 
 
 class Tag:
@@ -80,6 +108,7 @@ class Tag:
         self._from_data(self._payload)
 
     def _from_data(self, payload: Dict[str, Any]):
+
         self.id: str = payload["id"]    
         self.tag_type = payload["type"]
 

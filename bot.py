@@ -28,8 +28,6 @@ class Haune(commands.Bot):
 
         super().__init__(command_prefix="erm ", intents=discord.Intents.all())
 
-    async def on_ready(self):
-        self.logger.info("Successfully loaded %s %s", self.loaded_cogs, 'cogs' if self.loaded_cogs < 1 else 'cog')
 
     async def setup_hook(self):
         # Load Cogs
